@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fashion Advisor - Tu Asesor Personal de Moda</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style> 
+    <style>
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -14,7 +14,161 @@
     </style>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
-    <!-- CONTENIDO ORIGINAL COMPLETO -->
-    <!-- No se modifica nada -->
-    </body>
+    <div id="app" class="p-4 md:p-8">
+        <div class="max-w-4xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
+                    👗 Fashion Advisor
+                </h1>
+                <p class="text-gray-600 text-lg">Descubre el estilo perfecto para ti</p>
+            </div>
+
+            <!-- Progress -->
+            <div class="flex justify-center mb-8">
+                <div class="flex items-center gap-2">
+                    <div id="ind1" class="w-10 h-10 rounded-full bg-purple-600 text-white flex items-center justify-center">1</div>
+                    <div id="line1" class="w-16 h-1 bg-gray-200"></div>
+                    <div id="ind2" class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">2</div>
+                    <div id="line2" class="w-16 h-1 bg-gray-200"></div>
+                    <div id="ind3" class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">3</div>
+                </div>
+            </div>
+
+            <!-- Step 1 -->
+            <div id="step1" class="bg-white rounded-3xl shadow-2xl p-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">🧍 Selecciona tu tipo de cuerpo</h2>
+                <div class="grid md:grid-cols-2 gap-4 mb-6" id="bodyTypes"></div>
+                <button id="btn1" onclick="next()" disabled class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-xl font-semibold text-lg disabled:opacity-50">
+                    Continuar →
+                </button>
+            </div>
+
+            <!-- Step 2 -->
+            <div id="step2" class="bg-white rounded-3xl shadow-2xl p-8 hidden">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">🎨 Selecciona tu tono de piel</h2>
+                <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+                    <p class="text-sm text-blue-800"><strong>Tip:</strong> Observa las venas de tu muñeca bajo luz natural. Azuladas = frío, verdosas = cálido.</p>
+                </div>
+                <div class="grid gap-4 mb-6" id="skinTones"></div>
+                <div class="flex gap-3">
+                    <button onclick="back()" class="flex-1 bg-gray-200 text-gray-700 py-4 rounded-xl font-semibold">← Atrás</button>
+                    <button id="btn2" onclick="results()" disabled class="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-xl font-semibold disabled:opacity-50">Ver Resultados ⭐</button>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div id="step3" class="space-y-6 hidden">
+                <div class="bg-white rounded-3xl shadow-2xl p-8">
+                    <h2 id="rBodyName" class="text-2xl font-bold text-gray-800 mb-4"></h2>
+                    <p id="rBodyDesc" class="text-gray-600 mb-6"></p>
+                    <h3 class="font-bold text-lg mb-3">⭐ Prendas recomendadas:</h3>
+                    <div id="rClothing" class="grid gap-2 mb-6"></div>
+                    <div class="bg-gradient-to-r from-purple-100 to-pink-100 rounded-xl p-4">
+                        <h4 class="font-bold mb-2">Estilos destacados:</h4>
+                        <div id="rStyles" class="flex flex-wrap gap-2"></div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-3xl shadow-2xl p-8">
+                    <h2 id="rSkinName" class="text-2xl font-bold text-gray-800 mb-4"></h2>
+                    <p id="rSkinDesc" class="text-gray-600 mb-6"></p>
+                    <h3 class="font-bold text-lg mb-3">⭐ Colores que te favorecen:</h3>
+                    <div id="rColors" class="grid md:grid-cols-2 gap-2 mb-6"></div>
+                    <div class="bg-red-50 border border-red-200 rounded-xl p-4">
+                        <h4 class="font-bold text-red-800 mb-2">Colores a evitar:</h4>
+                        <p id="rAvoid" class="text-red-700 text-sm"></p>
+                    </div>
+                </div>
+                <button onclick="reset()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-xl font-semibold text-lg">Hacer nueva consulta</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const data = {
+            body: {
+                triangulo: {n:'Triángulo (Pera)',d:'Hombros más estrechos que caderas',c:['Blusas con detalles en hombros','Escotes amplios (barco, cuadrado)','Chaquetas estructuradas','Pantalones de corte recto o bootcut','Faldas A-line','Evitar: pantalones muy ajustados'],s:['Blazers con hombros marcados','Tops con estampados arriba','Pantalones oscuros']},
+                triangulo_invertido: {n:'Triángulo Invertido',d:'Hombros más anchos que caderas',c:['Pantalones con volumen (palazzo)','Faldas con vuelo','Tops simples y escotes en V','Pantalones con detalles','Vestidos con falda amplia','Evitar: hombreras'],s:['Pantalones claros','Faldas midi amplias','Tops sin mangas']},
+                rectangulo: {n:'Rectángulo (Atlético)',d:'Hombros y caderas alineados',c:['Cinturones para marcar cintura','Vestidos con cinturón','Peplum tops','Faldas lápiz','Pantalones de tiro alto','Capas y superposiciones'],s:['Vestidos wrap','Crop tops','Chaquetas entalladas']},
+                reloj_arena: {n:'Reloj de Arena',d:'Hombros y caderas balanceados, cintura definida',c:['Ropa entallada que resalte la cintura','Vestidos wrap','Cinturones','Faldas lápiz','Jeans de tiro alto','Evitar: ropa muy holgada'],s:['Vestidos bodycon','Blusas ceñidas','Pantalones high-waist']},
+                ovalo: {n:'Óvalo (Manzana)',d:'Peso centrado en el torso',c:['Escotes en V profundos','Vestidos imperio','Blusas fluidas','Pantalones rectos','Capas largas','Evitar: cinturones ajustados'],s:['Túnicas largas','Abrigos largos','Faldas A-line']}
+            },
+            skin: {
+                frio: {n:'Tono Frío',d:'Venas azuladas, piel rosada',co:['Azul royal, navy, turquesa','Rosa fucsia, magenta','Morado, lavanda','Verde esmeralda','Plateado','Negro, gris carbón'],a:['Naranjas, amarillos cálidos, dorados']},
+                calido: {n:'Tono Cálido',d:'Venas verdosas, piel dorada',co:['Naranja, terracota','Amarillo mostaza, dorado','Rojo tomate, coral','Verde oliva, militar','Marrón, camel','Crema, beige'],a:['Azules muy fríos, rosas neón, plateados']},
+                neutro: {n:'Tono Neutro',d:'Venas azul-verdosas, equilibrado',co:['Gris en todas sus tonalidades','Jade, verde menta','Rosa palo','Azul petróleo','Beige rosado','Prácticamente todos los colores'],a:['Colores muy saturados sin balance']}
+            }
+        };
+
+        let sel = {body:'',skin:''};
+
+        // Render options
+        document.getElementById('bodyTypes').innerHTML = Object.keys(data.body).map(k=>`
+            <button onclick="pick('body','${k}')" data-id="${k}" class="body-btn p-6 rounded-2xl border-2 border-gray-200 text-left hover:border-purple-300 transition-all">
+                <h3 class="font-bold text-lg mb-2">${data.body[k].n}</h3>
+                <p class="text-gray-600 text-sm">${data.body[k].d}</p>
+            </button>
+        `).join('');
+
+        document.getElementById('skinTones').innerHTML = Object.keys(data.skin).map(k=>`
+            <button onclick="pick('skin','${k}')" data-id="${k}" class="skin-btn p-6 rounded-2xl border-2 border-gray-200 text-left hover:border-purple-300 transition-all">
+                <h3 class="font-bold text-lg mb-2">${data.skin[k].n}</h3>
+                <p class="text-gray-600 text-sm">${data.skin[k].d}</p>
+            </button>
+        `).join('');
+
+        function pick(type,val) {
+            sel[type]=val;
+            const btns = type==='body'?'.body-btn':'.skin-btn';
+            document.querySelectorAll(btns).forEach(b=>b.className=b.className.replace('border-purple-600 bg-purple-50 shadow-lg','border-gray-200'));
+            document.querySelector(`${btns}[data-id="${val}"]`).className=`${btns.slice(1)} p-6 rounded-2xl border-2 border-purple-600 bg-purple-50 shadow-lg text-left transition-all`;
+            document.getElementById(type==='body'?'btn1':'btn2').disabled=false;
+        }
+
+        function next() {
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('step2').classList.remove('hidden');
+            document.getElementById('ind2').className='w-10 h-10 rounded-full bg-purple-600 text-white flex items-center justify-center';
+            document.getElementById('line1').className='w-16 h-1 bg-purple-600';
+        }
+
+        function back() {
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('step1').classList.remove('hidden');
+        }
+
+        function results() {
+            const b = data.body[sel.body];
+            const s = data.skin[sel.skin];
+            
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('step3').classList.remove('hidden');
+            document.getElementById('ind3').className='w-10 h-10 rounded-full bg-purple-600 text-white flex items-center justify-center';
+            document.getElementById('line2').className='w-16 h-1 bg-purple-600';
+
+            document.getElementById('rBodyName').textContent=b.n;
+            document.getElementById('rBodyDesc').textContent=b.d;
+            document.getElementById('rClothing').innerHTML=b.c.map(i=>`<div class="flex gap-3 p-3 bg-purple-50 rounded-lg"><span>▸</span><span>${i}</span></div>`).join('');
+            document.getElementById('rStyles').innerHTML=b.s.map(i=>`<span class="bg-white px-4 py-2 rounded-full text-sm font-medium shadow-sm">${i}</span>`).join('');
+            
+            document.getElementById('rSkinName').textContent=s.n;
+            document.getElementById('rSkinDesc').textContent=s.d;
+            document.getElementById('rColors').innerHTML=s.co.map(i=>`<div class="flex gap-3 p-3 bg-pink-50 rounded-lg"><div class="w-4 h-4 rounded-full bg-gradient-to-br from-pink-400 to-purple-400"></div><span>${i}</span></div>`).join('');
+            document.getElementById('rAvoid').textContent=s.a.join(', ');
+        }
+
+        function reset() {
+            sel={body:'',skin:''};
+            document.getElementById('step3').classList.add('hidden');
+            document.getElementById('step1').classList.remove('hidden');
+            document.getElementById('ind2').className='w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center';
+            document.getElementById('ind3').className='w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center';
+            document.getElementById('line1').className='w-16 h-1 bg-gray-200';
+            document.getElementById('line2').className='w-16 h-1 bg-gray-200';
+            document.getElementById('btn1').disabled=true;
+            document.getElementById('btn2').disabled=true;
+            document.querySelectorAll('.body-btn, .skin-btn').forEach(b=>b.className=b.className.replace('border-purple-600 bg-purple-50 shadow-lg','border-gray-200'));
+        }
+    </script>
+</body>
 </html>
